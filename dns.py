@@ -44,10 +44,12 @@ class MainApp(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def open_new_router_window(self):
+        print("Opening New Router Window")  # Debugging statement
         self.new_router_window = NewRouterWindow()
         self.new_router_window.show()
 
     def open_change_dns_window(self):
+        print("Opening Change DNS Window")  # Debugging statement
         self.change_dns_window = ChangeDNSWindow()
         self.change_dns_window.show()
 
@@ -147,7 +149,7 @@ class ChangeDNSWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Change DNS on Routers")
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(100, 100, 800, 400)  # Increased size
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setContentsMargins(20, 20, 20, 20)
@@ -169,6 +171,7 @@ class ChangeDNSWindow(QtWidgets.QWidget):
 
         # Button click handler
         self.save_dns_btn.clicked.connect(self.change_dns)
+        print("Change DNS Window initialized, button connected")  # Debugging statement
 
     def change_dns(self):
         dns_ip_1 = self.change_dns_ip_1.text()
@@ -187,6 +190,9 @@ class ChangeDNSWindow(QtWidgets.QWidget):
 
         for router in routers_list:
             try:
+                # Debugging: Print router details before connecting
+                print(f"Attempting to connect to router {router['name']} at {router['ip']} with user {router['username']} and password: '{router['password']}'")
+
                 # Connecting to the router
                 connection = routeros_api.RouterOsApiPool(
                     router['ip'],
@@ -195,7 +201,7 @@ class ChangeDNSWindow(QtWidgets.QWidget):
                     port=int(router['port'])
                 )
                 api = connection.get_api()
-                
+
                 # Update both DNS servers on the router
                 api.get_resource('/ip/dns/set').set(servers=[dns_ip_1, dns_ip_2])
 
@@ -209,6 +215,8 @@ class ChangeDNSWindow(QtWidgets.QWidget):
         # Inform user of the result
         QtWidgets.QMessageBox.information(self, "DNS Update", 
             f"DNS Update Complete!\nSuccess: {success_count}, Failed: {failed_count}")
+
+
 
 def main():
     load_routers()
