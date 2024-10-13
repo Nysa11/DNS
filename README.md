@@ -35,12 +35,12 @@ This command will install the additional tools needed for the application.
 1. Still in the Command Prompt or Terminal, navigate to the folder where you extracted the application files. For example:
 
    ```bash
-   cd C:\Users\YourName\Downloads\DNS-main
+   cd C:\Users\YourName\Downloads\DNS-main\DNS-main
    
 - Note: Make sure to change YourName to your actual username on your computer. For example, if your username is John, you should type:
 
    ```bash
-   cd C:\Users\John\Downloads\DNS-main
+   cd C:\Users\John\Downloads\DNS-main\DNS-main
 
 2. Once you're in the correct folder, type the following command and press Enter to start the application:
 
