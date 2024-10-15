@@ -1,6 +1,6 @@
 import sys
 import json
-import routeros_api
+import paramiko
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 # File to store router data
@@ -193,20 +193,25 @@ class ChangeDNSWindow(QtWidgets.QWidget):
                 # Debugging: Print router details before connecting
                 print(f"Attempting to connect to router {router['name']} at {router['ip']} with user {router['username']} and password: '{router['password']}'")
 
-                # Connecting to the router
-                connection = routeros_api.RouterOsApiPool(
-                    router['ip'],
-                    username=router['username'],
-                    password=router['password'] or '',  # Use empty password if not provided
-                    port=int(router['port'])
-                )
-                api = connection.get_api()
+                # SSH connection to the router using Paramiko
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # Automatically accept unknown host keys
+                ssh.connect(router['ip'], port=int(router['port']), username=router['username'], password=router['password'])
 
-                # Update both DNS servers on the router
-                api.get_resource('/ip/dns/set').set(servers=[dns_ip_1, dns_ip_2])
+                # Command to change the DNS settings on the router
+                change_dns_command = f'/ip dns set servers={dns_ip_1},{dns_ip_2}'
+                stdin, stdout, stderr = ssh.exec_command(change_dns_command)
 
-                success_count += 1
-                connection.disconnect()
+                # Check for errors
+                error = stderr.read().decode()
+                if error:
+                    print(f"Error: {error}")
+                    failed_count += 1
+                else:
+                    print(f"DNS servers changed successfully for {router['name']}")
+                    success_count += 1
+
+                ssh.close()
 
             except Exception as e:
                 print(f"Failed to update router {router['name']} at {router['ip']}: {e}")
@@ -216,13 +221,11 @@ class ChangeDNSWindow(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, "DNS Update", 
             f"DNS Update Complete!\nSuccess: {success_count}, Failed: {failed_count}")
 
-
-
 def main():
     load_routers()
     app = QtWidgets.QApplication(sys.argv)
-    window = MainApp()
-    window.show()
+    main_app = MainApp()
+    main_app.show()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
