@@ -26,7 +26,7 @@ This application allows you to easily change the DNS settings of MikroTik router
 2. In the Command Prompt or Terminal, type the following command and press Enter:
 
    ```bash
-   pip install PyQt5 python-routeros
+   pip install PyQt5 paramiko
 
 This command will install the additional tools needed for the application.
 
