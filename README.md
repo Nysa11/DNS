@@ -51,10 +51,10 @@ This command will install the additional tools needed for the application.
 
 1. Add a Router:
   - Enter the router’s name, IP address, username, password (if needed), and port number.
-  - Click the "Add" button to save it to your list.
+  - Click the "Add Router" button to save it to your list.
 
 2. Delete a Router:
-  - Select a router from the list and click the "Delete" button to remove it.
+  - Select a router from the list and click the "Delete Selected Router" button to remove it.
 
 3. Change DNS Settings:
   - Enter the new DNS addresses in the two fields.
